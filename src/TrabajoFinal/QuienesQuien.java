@@ -1,5 +1,17 @@
 package TrabajoFinal;
-import java.util.*;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 public class QuienesQuien {
 	
 	public static void respuesta(int res, String atr, ArrayList db) {
@@ -30,7 +42,39 @@ public class QuienesQuien {
 	}
 	
 	public static void creacion_usuario(String nombre) {
-		
+		JSONObject userdetails = new JSONObject();
+		userdetails.put("nombre",nombre);
+		userdetails.put("puntuacion", 0);
+		JSONArray userlist = new JSONArray();
+		JSONObject user = new JSONObject(); 
+        user.put("user", userdetails);
+        
+        
+        userlist.add(user);
+		try(FileWriter file = new FileWriter("users.json",true)){
+			file.write(userlist.toJSONString());	
+			file.flush();
+			System.out.println("Usuario creado correctamente!");
+			
+			}catch (IOException e){
+			e.printStackTrace();
+		}
+	}
+	
+	public static void comprobacion_usuario() {
+		 JSONParser jsonP = new JSONParser();
+		 try(FileReader reader = new FileReader("users.json")){
+			 Object obj = jsonP.parse(reader);
+			 JSONArray userlist = (JSONArray)obj;
+			 System.out.println(userlist);
+			 
+		 } catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static void main(String[] args) {
@@ -72,6 +116,9 @@ public class QuienesQuien {
 		db.add(p1);db.add(p2);db.add(p3);db.add(p4);db.add(p5);
 		
 		/*Juego*/
+		Scanner us = new Scanner(System.in);
+		System.out.println("Bienvenido al juego, dime un nombre de ususario!");
+		creacion_usuario(us.nextLine());
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Tu personaje es hombre?");
 		respuesta(sc.nextInt(),"hombre",db);

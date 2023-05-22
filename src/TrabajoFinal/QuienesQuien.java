@@ -3,6 +3,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.File;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,17 +49,38 @@ public class QuienesQuien {
 		JSONArray userlist = new JSONArray();
 		JSONObject user = new JSONObject(); 
         user.put("user", userdetails);
-        
-        
         userlist.add(user);
-		try(FileWriter file = new FileWriter("users.json",true)){
-			file.write(userlist.toJSONString());	
-			file.flush();
-			System.out.println("Usuario creado correctamente!");
-			
-			}catch (IOException e){
+        
+        File af = new File("users.json");
+        if(af.exists()){
+        JSONParser jsonP = new JSONParser();
+    	try(FileReader reader = new FileReader("users.json")){
+    		 Object obj = jsonP.parse(reader);
+			 JSONArray lista = (JSONArray)obj;
+			 lista.add(user);
+			 try(FileWriter file = new FileWriter("users.json")){
+				 file.write(lista.toJSONString());
+				 file.flush();
+				 System.out.println("Usuario creado correctamente!");	
+				}catch (IOException e){
+					e.printStackTrace();
+			} 
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
 			e.printStackTrace();
 		}
+    	}else {
+    		try(FileWriter file = new FileWriter("users.json")){
+    			file.write(userlist.toJSONString());
+    			file.flush();
+    			System.out.println("Usuario creado correctamente!");
+    		}catch (IOException e){
+    			e.printStackTrace();
+    		}
+    	}		
 	}
 	
 	public static void comprobacion_usuario() {
@@ -66,7 +88,6 @@ public class QuienesQuien {
 		 try(FileReader reader = new FileReader("users.json")){
 			 Object obj = jsonP.parse(reader);
 			 JSONArray userlist = (JSONArray)obj;
-			 System.out.println(userlist);
 			 
 		 } catch (FileNotFoundException e) {
 			e.printStackTrace();

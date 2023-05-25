@@ -140,6 +140,7 @@ public class QuienesQuien {
 		Scanner us = new Scanner(System.in);
 		System.out.println("Bienvenido al juego, dime un nombre de ususario!");
 		creacion_usuario(us.nextLine());
+		
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Tu personaje es hombre?");
 		respuesta(sc.nextInt(),"hombre",db);

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.random.*;
+import java.util.InputMismatchException;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -19,52 +20,68 @@ public class QuienesQuien {
 	public static String usuario;
 	
 	public static void respuesta(int res, String atr, ArrayList db) {
-		boolean resp;
-		ArrayList eliminado = new ArrayList();
-		if(res==1) {
-			resp= true;
-		}else{
-			resp=false;
-		}
-		for(Object d: db){
-			HashMap persona = (HashMap) d;
-			boolean atri=(boolean)persona.get(atr);
-			if(atri!=resp) {
-				eliminado.add(persona);
+		
+		try {
+			
+			int ress = res;
+			if(ress!=1 && ress!=2) {
+				throw new InputMismatchException();
 			}
+			
+			boolean resp;
+			ArrayList eliminado = new ArrayList();
+			
+			if(res==1) {
+				resp= true;
+			}else{
+				resp=false;
+			}
+			
+			for(Object d: db){
+				HashMap persona = (HashMap) d;
+				boolean atri=(boolean)persona.get(atr);
+				if(atri!=resp) {
+					eliminado.add(persona);
+				}
+			}
+			
+			for(Object per: eliminado) {
+				db.remove(per);
+			}
+			if(db.size()==0) {
+				System.out.print("No hay ningun personaje con esas caracteristicas :(");
+				System.exit(0);
+			}
+			if (db.size()==1) {
+				HashMap persona= (HashMap)db.get(0);
+				String nombre = (String)persona.get("name");
+				System.out.println("El nombre de tu personaje es:"+nombre+"!!!!!");
+				puntuacion();
+				System.exit(0);
+			}
+			if (db.size()<3) {
+				int num=(int) (Math.random() * (2 - 0 ) + 0);
+				HashMap persona= (HashMap)db.get(num);
+				String nombre = (String)persona.get("name");
+				System.out.println("El nombre de tu personaje es:"+nombre+"?");
+				Scanner sc = new Scanner(System.in);
+				int respuesta= sc.nextInt();
+				if(respuesta==1) {
+					System.exit(0);
+				}else {
+					eliminado.add(persona);
+				}
+			}
+			for(Object per: eliminado) {
+				db.remove(per);
+			}
+		}catch(InputMismatchException e){
+			System.out.println("Error: ingresa una respuesta valida");
+			System.exit(0);
 		}
 		
-		for(Object per: eliminado) {
-			db.remove(per);
-		}
-		if(db.size()==0) {
-			System.out.print("No hay ningun personaje con esas caracteristicas :(");
-			System.exit(0);
-		}
-		if (db.size()==1) {
-			HashMap persona= (HashMap)db.get(0);
-			String nombre = (String)persona.get("name");
-			System.out.println("El nombre de tu personaje es:"+nombre+"!!!!!");
-			puntuacion();
-			System.exit(0);
-		}
-		if (db.size()<3) {
-			int num=(int) (Math.random() * (2 - 0 ) + 0);
-			HashMap persona= (HashMap)db.get(num);
-			String nombre = (String)persona.get("name");
-			System.out.println("El nombre de tu personaje es:"+nombre+"?");
-			Scanner sc = new Scanner(System.in);
-			int respuesta= sc.nextInt();
-			if(respuesta==1) {
-				System.exit(0);
-			}else {
-				eliminado.add(persona);
-			}
-		}
-		for(Object per: eliminado) {
-			db.remove(per);
-		}
 	}
+	
 	public static boolean comprobar_usuario(String nom){
 		File af = new File("users.json");
         if(af.exists()){
@@ -94,6 +111,7 @@ public class QuienesQuien {
         }
 		
 	}
+	
 	public static void puntuacion() {
 		try {
             FileReader reader = new FileReader("users.json");
@@ -120,10 +138,12 @@ public class QuienesQuien {
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
-	} 
+	}
+	
 	public static void set_usuario(String nom) {
 		usuario=nom;
 	}
+	
 	public static void creacion_usuario(String nombre) {
 		usuario=nombre;
 		JSONObject userdetails = new JSONObject();
@@ -166,6 +186,54 @@ public class QuienesQuien {
     	}		
 	}
 	
+	public static void mostrar_ranking() {
+		File af = new File("users.json");
+        if(af.exists()){
+        	
+        	JSONParser parser = new JSONParser();
+            try {
+                // Lee el archivo JSON
+                Object obj = parser.parse(new FileReader("users.json"));
+
+                JSONArray jsonArray = (JSONArray) obj;
+
+                // Crea una lista para almacenar los objetos JSON
+               ArrayList<JSONObject> usuarios = new ArrayList<>();
+
+                // Recorre el arreglo JSON y obtiene los objetos JSON de los usuarios
+                for (Object o : jsonArray) {
+                    JSONObject jsonObject = (JSONObject) o;
+                    usuarios.add(jsonObject);
+                }
+
+                // Ordena la lista de usuarios por puntuación de mayor a menor
+                usuarios.sort((o1, o2) -> {
+                    long puntuacion1 = (Long) ((JSONObject) o1.get("user")).get("puntuacion");
+                    long puntuacion2 = (Long) ((JSONObject) o2.get("user")).get("puntuacion");
+                    return Long.compare(puntuacion2, puntuacion1);
+                });
+
+                // Muestra el ranking de usuarios
+                
+                System.out.println("Ranking de usuarios:");
+                for (JSONObject usuario : usuarios) {
+                    JSONObject userObject = (JSONObject) usuario.get("user");
+                    String nombre = (String) userObject.get("nombre");
+                    long puntuacion = (Long) userObject.get("puntuacion");
+                    System.out.println(nombre + ": " + puntuacion);
+                }
+                System.exit(0);
+            } catch (Exception e) {
+                e.printStackTrace();
+                
+            }
+					
+        }else {
+        	System.out.println("No hay usuarios creados!");
+        	System.exit(0);
+        } 
+    }
+    
 	public static void main(String[] args) {
 		
 		/*Base de datos*/
@@ -188,24 +256,38 @@ public class QuienesQuien {
 		db.add(p1);db.add(p2);db.add(p3);db.add(p4);db.add(p5);db.add(p6);db.add(p7);db.add(p8);db.add(p9);db.add(p10);db.add(p11);db.add(p12);db.add(p13);
 		
 		/*Juego*/
+		
 		Scanner us = new Scanner(System.in);
 		System.out.println("Bienvenido al juego, dime un nombre de ususario!");
 		String nombre= us.nextLine();
 		if(comprobar_usuario(nombre)==true) {
 			System.out.println("El usuario ya existe.");
-			System.out.println("(1)¿Quieres seguir jugando con el? o (2)¿Quieres crear un nuevo usuario con otro nombre?");
+			System.out.println("(1)¿Quieres seguir jugando con el? , (2)¿Quieres crear un nuevo usuario con otro nombre? (3)¿Quieres ver el ranking?");
 			Scanner el = new Scanner(System.in);
 			int eleccion=el.nextInt();
 			if(eleccion==2) {
 				System.out.print("Escribe el nuevo usuario");
 				Scanner nu = new Scanner(System.in);
 				creacion_usuario(nu.nextLine());
-			}else{
+			}else if(eleccion==1){
 				set_usuario(nombre);
+			}else if(eleccion==3) {
+				mostrar_ranking();
 			}
 		}else {
 			creacion_usuario(nombre);
 		}
+		
+		System.out.println("Reglas del juego: Solo puedes responder con 1(si), 2(no)");
+		System.out.println("Tienes que pensar en una persona de clase de las siguientes: ");
+		for(Object d: db){
+			HashMap persona = (HashMap) d;
+			String nom=(String)persona.get("name");
+			System.out.println(" "+nom+" ");
+		}
+		System.out.println("Y yo lo adivinare!");
+		System.out.println("Ya estas listo para jugar!! Empezemos <3");
+		
 		
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Tu personaje es hombre?");
@@ -223,6 +305,5 @@ public class QuienesQuien {
 		System.out.println("Tu personaje es español?");
 		respuesta(sc.nextInt(),"español",db);		
 		}
-
 }
 

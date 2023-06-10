@@ -134,7 +134,7 @@ public class QuienesQuien {
             writer.write(jsonArray.toJSONString());
             writer.close();
 
-            System.out.println("JSON file updated successfully.");
+            System.out.println("Puntuacion actualizada correctamente!");
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
@@ -278,8 +278,9 @@ public class QuienesQuien {
 			creacion_usuario(nombre);
 		}
 		
-		System.out.println("Reglas del juego: Solo puedes responder con 1(si), 2(no)");
-		System.out.println("Tienes que pensar en una persona de clase de las siguientes: ");
+		System.out.println("Reglas del juego:");
+		System.out.println("Solo puedes responder con 1(si) o 2(no)");
+		System.out.println("Tienes que pensar en una persona que este incluida en clase de las siguientes: ");
 		for(Object d: db){
 			HashMap persona = (HashMap) d;
 			String nom=(String)persona.get("name");

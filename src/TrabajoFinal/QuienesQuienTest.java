@@ -65,5 +65,8 @@ class QuienesQuienTest {
 		assertFalse(QuienesQuien.comprobar_usuario(nom));
 
 	}
-	
+	@Test
+	void respuestainvalida() {
+		assertDoesNotThrow(() -> QuienesQuien.respuesta(4, "hombre",db));
+	}
 }

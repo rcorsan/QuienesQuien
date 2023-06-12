@@ -75,7 +75,6 @@ public class QuienesQuien {
 			}
 		} catch (InputMismatchException e) {
 			System.out.println("Error respuesta invalida");
-			System.exit(0);
 		} catch (NoPersonajeException e) {
 			e.printStackTrace();
 			System.exit(0);

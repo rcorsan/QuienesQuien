@@ -20,7 +20,6 @@ public class QuienesQuien {
 	public static String usuario;
 	
 	public static void respuesta(int res, String atr, ArrayList db) {
-		//prueba de commit
 		try {
 			
 			int ress = res;

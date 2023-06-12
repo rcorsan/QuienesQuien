@@ -50,4 +50,20 @@ class QuienesQuienTest {
 		this.db.add(p2);
 		QuienesQuien.creacion_usuario("UsuarioPrueba");
 	}
+	
+	@Test
+	void testComprobar_usuarioExistente() {
+		Boolean resultado = QuienesQuien.comprobar_usuario("UsuarioPrueba");
+		// Comprueba que se devuelva true cuando el usuario existe
+		assertEquals(true, resultado);
+	}
+
+	@Test
+	void testComprobar_usuarioInexistente() {
+		String nom = "UsuarionoExistente";
+		// Comprueba que se devuelva false cuando el usuario no existe
+		assertFalse(QuienesQuien.comprobar_usuario(nom));
+
+	}
+	
 }

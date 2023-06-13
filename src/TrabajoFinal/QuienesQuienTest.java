@@ -50,7 +50,40 @@ class QuienesQuienTest {
 		this.db.add(p2);
 		QuienesQuien.creacion_usuario("UsuarioPrueba");
 	}
-	
+
+	@Test
+	void testPuntuacion() {
+		setUp();
+		QuienesQuien.puntuacion();
+
+		try {
+			FileReader reader = new FileReader("users.json");
+			JSONParser jsonParser = new JSONParser();
+			JSONArray jsonArray = (JSONArray) jsonParser.parse(reader);
+			reader.close();
+
+			for (Object obj : jsonArray) {
+				JSONObject jsonObj = (JSONObject) obj;
+				JSONObject userObj = (JSONObject) jsonObj.get("user");
+				String nombre = (String) userObj.get("nombre");
+
+				if (nombre.equals(QuienesQuien.usuario)) {
+					long puntuacion = (long) userObj.get("puntuacion");
+					assertEquals(1, puntuacion);
+				}
+			}
+
+		} catch (IOException | ParseException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	@Test
+	void respuestainvalida() {
+		assertDoesNotThrow(() -> QuienesQuien.respuesta(4, "hombre", db));
+	}
+
 	@Test
 	void testComprobar_usuarioExistente() {
 		Boolean resultado = QuienesQuien.comprobar_usuario("UsuarioPrueba");
@@ -65,8 +98,48 @@ class QuienesQuienTest {
 		assertFalse(QuienesQuien.comprobar_usuario(nom));
 
 	}
+
 	@Test
-	void respuestainvalida() {
-		assertDoesNotThrow(() -> QuienesQuien.respuesta(4, "hombre",db));
+	void testSet_usuario() {
+		String nom = "nuevo_usuario";
+		QuienesQuien.set_usuario(nom);
+
+		// Comprueba que el usuario se asigna correctamente
+		assertEquals(nom, QuienesQuien.usuario);
+	}
+
+	@Test
+	void testCreacion_usuario() {
+		setUp();
+		// Comprueba que el nuevo usuario se haya creado correctamente mediante el
+		// metodo comprobar_usuario()
+		assertTrue(QuienesQuien.comprobar_usuario("UsuarioPrueba"));
+	}
+
+	@Test
+	void creacion_usuario_nombreVacio() {
+		String nombre = "";
+		// Comprueba que se lance la excepción IllegalArgumentException
+		assertThrows(IllegalArgumentException.class, () -> QuienesQuien.creacion_usuario(nombre));
+	}
+
+	@Test
+	void creacionfichero_comprobacion() {
+		File archivo = new File("users.json");
+		assertTrue(archivo.exists());
+	}
+	
+	@AfterAll
+	static void eliminarFichero() {
+		// Eliminar el archivo JSON después de que se completen todas las pruebas
+		File file = new File("users.json");
+		if (file.exists()) {
+			boolean deleted = file.delete();
+			if (deleted) {
+				System.out.println("Archivo JSON eliminado correctamente");
+			} else {
+				System.out.println("No se pudo eliminar el archivo JSON");
+			}
+		}
 	}
 }

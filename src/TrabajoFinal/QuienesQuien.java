@@ -21,7 +21,6 @@ public class QuienesQuien {
 
 	public static void respuesta(int res, String atr, ArrayList db) {
 		try {
-
 			int ress = res;
 			if (ress != 1 && ress != 2) {
 				throw new InputMismatchException();
@@ -55,7 +54,7 @@ public class QuienesQuien {
 				String nombre = (String) persona.get("name");
 				System.out.println("El nombre de tu personaje es:" + nombre + "!!!!!");
 				puntuacion();
-				System.exit(0);
+				throw new JuegoTerminadoException();
 			}
 			if (db.size() < 3) {
 				int num = (int) (Math.random() * (2 - 0) + 0);
@@ -65,7 +64,9 @@ public class QuienesQuien {
 				Scanner sc = new Scanner(System.in);
 				int respuesta = sc.nextInt();
 				if (respuesta == 1) {
-					System.exit(0);
+					System.out.println("El nombre de tu personaje es:" + nombre+"!!!");
+					puntuacion();
+					throw new JuegoTerminadoException();
 				} else {
 					eliminado.add(persona);
 				}
@@ -74,8 +75,11 @@ public class QuienesQuien {
 				db.remove(per);
 			}
 		} catch (InputMismatchException e) {
-			System.out.println("Error respuesta invalida");
+			System.out.println("Error: respuesta invalida");
 		} catch (NoPersonajeException e) {
+			e.printStackTrace();
+			System.exit(0);
+		} catch (JuegoTerminadoException e) {
 			e.printStackTrace();
 			System.exit(0);
 		}
@@ -142,10 +146,16 @@ public class QuienesQuien {
 
 	public static void set_usuario(String nom) {
 		usuario = nom;
+		if (usuario == "") {
+			throw new IllegalArgumentException();
+		}
 	}
 
 	public static void creacion_usuario(String nombre) {
 		usuario = nombre;
+		if (usuario == "") {
+			throw new IllegalArgumentException();
+		}
 		JSONObject userdetails = new JSONObject();
 		userdetails.put("nombre", nombre);
 		userdetails.put("puntuacion", 0);
@@ -200,7 +210,7 @@ public class QuienesQuien {
 				// Crea una lista para almacenar los objetos JSON
 				ArrayList<JSONObject> usuarios = new ArrayList<>();
 
-				// Recorre el arreglo JSON y obtiene los objetos JSON de los usuarios
+				// Recorre el array JSON y obtiene los objetos JSON de los usuarios
 				for (Object o : jsonArray) {
 					JSONObject jsonObject = (JSONObject) o;
 					usuarios.add(jsonObject);

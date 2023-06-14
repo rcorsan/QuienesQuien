@@ -8,7 +8,7 @@
   -Se te proporcionara el jar en el blackboard de la universidad
   -Para importar el jar, ir a las propiedades del proyecto, java build path, librerias, eliminas el anterior y añades el tuyo dandole a "ADD EXTERNAL JAR"
 
-3) Para ejecutar el juego simplemente ejecutar la clase "QuienesQuien.java"
+3)Para ejecutar el juego simplemente ejecutar la clase "QuienesQuien.java"
 
 4)Al crearse los ususarios, se crea un archivo llamado "users.json" en el mismo proyecto, probablemente en el momento de creacion no lo veras, tendras que darle boton derecho al proyecto y refresh.
 

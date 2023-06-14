@@ -18,12 +18,24 @@ import org.json.simple.parser.ParseException;
 public class QuienesQuien {
 
 	public static String usuario;
-
+	
+	
+	//-------------------------------------METODOS-------------------------------------------------
+	
+	
+	//Metodo(1): Compara la rspuesta con el atributo de la BBDD, si no coincide lo elimina.
+	//--Cuando solo quedan dos elemntos en la BBDD pregunta si es uno de ellos.
+	//--Cuando solo queda un elemento en la BBDD dice el personaje adivinado.
+	//--Comprueba tambien si el formato de la rspuesta es correcto.
+	
 	public static void respuesta(int res, String atr, ArrayList db) {
+		
 		try {
+			
 			int ress = res;
 			if (ress != 1 && ress != 2) {
 				throw new InputMismatchException();
+				
 			}
 
 			boolean resp;
@@ -74,8 +86,6 @@ public class QuienesQuien {
 			for (Object per : eliminado) {
 				db.remove(per);
 			}
-		} catch (InputMismatchException e) {
-			System.out.println("Error: respuesta invalida");
 		} catch (NoPersonajeException e) {
 			e.printStackTrace();
 			System.exit(0);
@@ -85,6 +95,10 @@ public class QuienesQuien {
 		}
 
 	}
+	
+	//Metodo(2): Comprueba si el usuario existe, devuelve TRUE si se cumple,FALSE si no.
+		//--Comprueba si el archivo exite antes de comparar el usuario con el archivo JSON.
+		
 
 	public static boolean comprobar_usuario(String nom) {
 		File af = new File("users.json");
@@ -115,7 +129,9 @@ public class QuienesQuien {
 		}
 
 	}
-
+	
+	//Metodo(3): Busca el usuario en el archivo JSON y le suma 1 a la puntuacion.
+		
 	public static void puntuacion() {
 		try {
 			FileReader reader = new FileReader("users.json");
@@ -143,6 +159,9 @@ public class QuienesQuien {
 			e.printStackTrace();
 		}
 	}
+	
+	//Metodo(4): Este metodo se usa cuando ya existe el usuario y quiere seguir jugando con el,para guardar el nombre.
+	// y usarlo si es necesario para subir la puntuacion.
 
 	public static void set_usuario(String nom) {
 		usuario = nom;
@@ -150,6 +169,13 @@ public class QuienesQuien {
 			throw new IllegalArgumentException();
 		}
 	}
+	
+	//Metodo(5): Creacion de los usuarios y archivo JSON
+		//--Primero comprueba si el nombre no esta vacio, si lo esta lanza una excepcion
+		//--Si el archivo no existia, simplemente crea el archivo "users.json" y crea el usuario con el nombre 
+			//pasado por parametro y le asigna puntuacion 0.
+		//--Si el archivo existia, lee el archivo, guarda la lista y añade el usuario nuevo.
+			//esto fue hecho para evitar que se sobreescriba.
 
 	public static void creacion_usuario(String nombre) {
 		usuario = nombre;
@@ -195,6 +221,11 @@ public class QuienesQuien {
 			}
 		}
 	}
+	
+	////Metodo(6): Muestra el ranking de usuario de mayor a menor puntuacion.
+	//--Lee el archivo Json y guarda los usuarios en un ArrayList
+	//--Ordena los usuarios segun su puntacion
+	//--Imprime el ranking.
 
 	public static void mostrar_ranking() {
 		File af = new File("users.json");
@@ -246,7 +277,9 @@ public class QuienesQuien {
 
 	public static void main(String[] args) {
 
-		/* Base de datos */
+		//----------------------------BASE DE DATOS---------------------------------------------------------------
+		//Base de datos creada a traves de clave valor y arrayList.
+		
 		boolean si = true;
 		boolean no = false;
 		ArrayList db = new ArrayList();
@@ -381,8 +414,9 @@ public class QuienesQuien {
 		db.add(p12);
 		db.add(p13);
 
-		/* Juego */
-
+		//-------------------------------INICIO DEL JUEGO---------------------------------------------------------
+		//Aqui es donde se usan los metodos correspondientes para poder realizar el juego
+		
 		Scanner us = new Scanner(System.in);
 		System.out.println("Bienvenido al juego, dime un nombre de ususario!");
 		String nombre = us.nextLine();
@@ -400,8 +434,13 @@ public class QuienesQuien {
 				set_usuario(nombre);
 			} else if (eleccion == 3) {
 				mostrar_ranking();
+			}else if(eleccion == 2){
+				creacion_usuario(nombre);
+			} else {
+			System.out.print("Error de formato de respuesta!");
+			System.exit(0);
 			}
-		} else {
+		}else {
 			creacion_usuario(nombre);
 		}
 

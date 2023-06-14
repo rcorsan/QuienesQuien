@@ -15,3 +15,7 @@
 5)Al crearse los ususarios, se crea un archivo llamado "users.json" en el mismo proyecto, probablemente en el momento de creacion no lo veras, tendras que darle boton derecho al proyecto y refresh.
 
 6)Las clases de test se ejecutan antes del juego, ya que tienen un metodo que elimina el archivo "users.json" ya que se usa para las pruebas.
+
+7)Siempre que acabe el juego o se lanze la excepcion, habra que volver a ejecutarse la clase.
+
+8)Los usuarios ya creados tienen distintas opciones que los nuevos (ver ranking, crear nuevo usuario, mantener usuario).

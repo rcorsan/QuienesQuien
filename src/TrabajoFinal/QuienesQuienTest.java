@@ -1,5 +1,6 @@
 package TrabajoFinal;
 
+
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -12,6 +13,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.InputMismatchException;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -81,7 +83,7 @@ class QuienesQuienTest {
 
 	@Test
 	void respuestainvalida() {
-		assertDoesNotThrow(() -> QuienesQuien.respuesta(4, "hombre", db));
+		assertThrows(InputMismatchException.class, () -> QuienesQuien.respuesta(4, "hombre", db));
 	}
 
 	@Test
